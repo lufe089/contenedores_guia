@@ -226,7 +226,7 @@ for (auto it = edades.begin(); it != edades.end(); ++it) {
 
 ---
 
-## 1.4 Clase auxiliar para pruebas: `Prueba`
+## 1.4 Ejercicios
 
 Para facilitar el desarrollo y la organización de los ejercicios, se propone crear una clase auxiliar denominada `Prueba`. Esta clase contendrá los métodos de prueba para cada tipo de contenedor.
 
@@ -248,10 +248,6 @@ int main() {
     return 0;
 }
 ```
-
----
-
-## 1.5 Ejercicios de Nivel 1 (sin contexto del sistema)
 
 ### Ejercicio 1. Lista de nombres
 
@@ -325,4 +321,390 @@ void Prueba::probarMap() {
 ```
 
 </details>
+
+## Sección 2 Iteradores en C++
+
+### 2.1 ¿Qué es un iterador?
+
+Un **iterador** es un objeto que actúa como un puntero para recorrer una estructura de datos. Permite acceder secuencialmente a los elementos de un contenedor sin exponer cómo están almacenados internamente.
+
+### 📦 Analogía cotidiana
+
+Piensa en una **cinta transportadora** en una fábrica de chocolates. Cada dulce pasa frente a ti, uno por uno. Tú (el iterador) no necesitas saber dónde están almacenados todos los dulces, solo necesitas un mecanismo para ver el siguiente.
+
+<details>
+<summary>Código de ejemplo</summary>
+
+```cpp
+std::vector<std::string> tareas = {"Lavar", "Cocinar", "Estudiar"};
+auto it = tareas.begin(); // Iterador apuntando al primer elemento
+std::cout << *it;         // Accede al valor apuntado: "Lavar"
+```
+
+</details>
+
+---
+
+### 2.2 ¿Por qué usar iteradores?
+
+- Son **necesarios** cuando se usan funciones genéricas de la STL (como `sort`, `find`, etc.).
+- Permiten **modificar elementos** directamente durante el recorrido.
+- Funcionan de forma **uniforme** para diferentes tipos de contenedores. Funcionan de forma uniforme para diferentes tipos de contenedores. Esto significa que, sin importar si estamos utilizando un vector, un set o un map, podemos recorrer sus elementos utilizando la misma lógica basada en iteradores. Esta característica facilita el desarrollo de funciones genéricas que pueden aplicarse a distintos tipos de estructuras, sin necesidad de adaptar el código a cada una. Por ejemplo, podemos crear una función que imprima los elementos de cualquier colección utilizando simplemente sus iteradores, sin tener que saber cómo están almacenados internamente los datos ni preocuparse por si el contenedor permite acceso por índice o no.
+
+### Diferencias con otros ciclos
+
+| Tipo de recorrido     | ¿Usa índices? | ¿Requiere conocer tamaño? | ¿Permite modificar? | ¿Usa iteradores? |
+|----------------------|---------------|----------------------------|---------------------|------------------|
+| `for` clásico        | Sí            | Sí                         | Sí                  | No               |
+| `for` basado en rango| No            | No                         | No (si es `const`)  | Internamente sí  |
+| Iterador explícito   | No            | No                         | Sí                  | Sí               |
+
+---
+
+### 2.3 ¿Cuándo es obligatorio usar iteradores?
+
+✅ Obligatorio:
+- Al usar algoritmos de la STL (`find`, `sort`, etc.).
+- Para recorrer `set`, `map`, `list`, donde no hay acceso por índice.
+- Para modificar elementos mientras se recorren (sin invalidar el ciclo).
+
+❌ No necesario:
+- Para contenedores con acceso aleatorio (`vector`) cuando solo se requiere leer valores.
+
+---
+
+
+### 📝 Ejemplos
+
+- Crear un `set<string>` con nombres de personas y recorrerlo usando un iterador para imprimir solo los nombres que tienen más de 4 letras.
+
+<details>
+<summary>Solución sugerida</summary>
+
+```cpp
+#include <iostream>
+#include <set>
+#include <string>
+
+int main() {
+    std::set<std::string> nombres = {"Ana", "Santiago", "Luis", "Camila"};
+
+    for (auto it = nombres.begin(); it != nombres.end(); ++it) {
+        if (it->size() > 4) {
+            std::cout << *it << std::endl;
+        }
+    }
+    return 0;
+}
+```
+
+</details>
+
+- Crear un `map<string, float>` de productos y precios. Usar iterador para aplicar un descuento del 10% a todos los productos.
+
+<details>
+<summary>Solución sugerida</summary>
+
+```cpp
+#include <iostream>
+#include <map>
+#include <string>
+
+int main() {
+    std::map<std::string, float> productos = {
+        {"Pan", 1000}, {"Leche", 2500}, {"Queso", 3500}
+    };
+
+    for (auto it = productos.begin(); it != productos.end(); ++it) {
+        it->second *= 0.9; // Aplicar 10% de descuento
+        std::cout << it->first << ": $" << it->second << std::endl;
+    }
+    return 0;
+}
+```
+
+</details>
+
+---
+
+### Sección 2.3 Algoritmos de la STL
+
+#### 2.3.1 ¿Qué son los algoritmos?
+
+Son funciones genéricas que operan sobre secuencias (contenedores). Se definen en `<algorithm>` y requieren **iteradores** como argumentos.
+
+```cpp
+#include <algorithm>
+#include <vector>
+```
+
+---
+
+#### 2.3.2 Ejemplos y analogías de uso
+
+##### 🔍 `find`: Buscar un elemento
+
+**Analogía**: Buscar un nombre en una lista de asistencia.
+
+<details>
+<summary>Solución sugerida</summary>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+
+int main() {
+    std::vector<std::string> lista = {"Ana", "Luis", "Carlos"};
+    auto it = std::find(lista.begin(), lista.end(), "Luis");
+
+    if (it != lista.end())
+        std::cout << "Encontrado: " << *it << std::endl;
+    else
+        std::cout << "No está en la lista." << std::endl;
+    return 0;
+}
+```
+
+</details>
+
+---
+
+##### 🔢 `count`: Contar ocurrencias
+
+**Analogía**: Contar cuántas veces alguien llegó tarde en un mes.
+
+<details>
+<summary>Solución sugerida</summary>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> llegadas = {1, 0, 1, 1, 0};
+    int total = std::count(llegadas.begin(), llegadas.end(), 1);
+    std::cout << "Días tarde: " << total << std::endl;
+    return 0;
+}
+```
+
+</details>
+
+---
+
+##### 🔠 `sort`: Ordenar elementos
+
+**Analogía**: Ordenar calificaciones de mayor a menor.
+
+<details>
+<summary>Solución sugerida</summary>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> notas = {3, 5, 4, 2};
+    std::sort(notas.begin(), notas.end(), std::greater<int>());
+
+    for (int n : notas)
+        std::cout << n << " ";
+    return 0;
+}
+```
+
+</details>
+
+---
+
+##### 🧮 `accumulate`: Sumar elementos
+
+**Analogía**: Calcular el total de gastos del mes.
+
+<details>
+<summary>Solución sugerida</summary>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <numeric>
+
+int main() {
+    std::vector<int> gastos = {100, 200, 150};
+    int total = std::accumulate(gastos.begin(), gastos.end(), 0);
+    std::cout << "Total: " << total << std::endl;
+    return 0;
+}
+```
+
+</details>
+
+---
+
+##### 🧹 `remove`: Eliminar (lógicamente) un elemento
+
+<details>
+<summary>Solución sugerida</summary>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> numeros = {1, 2, 3, 2, 4};
+    auto fin = std::remove(numeros.begin(), numeros.end(), 2);
+    numeros.erase(fin, numeros.end());
+
+    for (int n : numeros)
+        std::cout << n << " ";
+    return 0;
+}
+```
+
+</details>
+
+> 🛑 `remove` solo mueve los elementos no eliminados al principio. Hay que llamar `erase()` para ajustar el tamaño.
+
+---
+
+##### 🎨 `for_each`: Ejecutar una acción
+
+<details>
+<summary>Solución sugerida</summary>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+
+int main() {
+    std::vector<std::string> frutas = {"manzana", "pera", "uva"};
+
+    std::for_each(frutas.begin(), frutas.end(), [](std::string& fruta){
+        fruta = "🍎 " + fruta;
+    });
+
+    for (const std::string& f : frutas)
+        std::cout << f << std::endl;
+    return 0;
+}
+```
+
+</details>
+
+---
+
+### 🧩 Relación entre iteradores y algoritmos
+
+Los algoritmos **no trabajan directamente con contenedores**, sino con sus **iteradores**. Esto los hace más flexibles: un mismo algoritmo puede usarse sobre `vector`, `set`, `list`, etc.
+
+---
+
+## 📝 Ejercicios prácticos
+
+### Ejercicio 1: Buscar
+
+Crear un `vector<string>` con nombres. Pedir al usuario un nombre y usar `find` para verificar si está en la lista.
+
+<details>
+<summary>Solución sugerida</summary>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+int main() {
+    std::vector<std::string> nombres = {"Ana", "Luis", "Carlos"};
+    std::string buscar;
+    std::cout << "Ingrese el nombre a buscar: ";
+    std::cin >> buscar;
+
+    auto it = std::find(nombres.begin(), nombres.end(), buscar);
+    if (it != nombres.end())
+        std::cout << "Encontrado: " << *it << std::endl;
+    else
+        std::cout << "No encontrado." << std::endl;
+    return 0;
+}
+```
+
+</details>
+
+### Ejercicio 2: Contar
+
+Usar `count` para contar cuántas veces aparece un número en un `vector<int>`.
+
+<details>
+<summary>Solución sugerida</summary>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> numeros = {2, 3, 2, 5, 2, 1};
+    int total = std::count(numeros.begin(), numeros.end(), 2);
+    std::cout << "El número 2 aparece " << total << " veces." << std::endl;
+    return 0;
+}
+```
+
+</details>
+
+### Ejercicio 3: Ordenar
+
+Crear un vector de calificaciones y ordenarlas de mayor a menor usando `sort`.
+
+<details>
+<summary>Solución sugerida</summary>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> calificaciones = {3, 5, 4, 2};
+    std::sort(calificaciones.begin(), calificaciones.end(), std::greater<int>());
+
+    for (int nota : calificaciones)
+        std::cout << nota << " ";
+    return 0;
+}
+```
+
+</details>
+
+### Ejercicio 4: Acumular
+
+Sumar todos los gastos registrados en un vector.
+
+<details>
+<summary>Solución sugerida</summary>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <numeric>
+
+int main() {
+    std::vector<int> gastos = {1000, 2500, 3200};
+    int total = std::accumulate(gastos.begin(), gastos.end(), 0);
+    std::cout << "Total de gastos: $" << total << std::endl;
+    return 0;
+}
+```
+
+</details>
+
+
 
