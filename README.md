@@ -1,5 +1,5 @@
 # Práctica contenedores, iteradores y algoritmos - Gestión de tareas a estudiantes
-> Material introductorio a este tema puede encontrar disponible en: https://github.com/lufe089/POO/blob/main/7.Contendores.
+> Material introductorio a este tema puede encontrar disponible en: https://github.com/lufe089/POO/blob/main/7.Contendores.md
 >
 ##  Ejercicio administración de tareas diarias universitarios
 
