@@ -338,7 +338,7 @@ Piensa en una **cinta transportadora** en una fábrica de chocolates. Cada dulce
 ```cpp
 std::vector<std::string> tareas = {"Lavar", "Cocinar", "Estudiar"};
 auto it = tareas.begin(); // Iterador apuntando al primer elemento
-std::cout << *it;         // Accede al valor apuntado: "Lavar"
+std::cout << *it; // El asterisco (*) se usa para acceder al valor al que apunta el iterador         // Accede al valor apuntado: "Lavar"
 ```
 
 </details>
@@ -427,9 +427,9 @@ int main() {
 
 ---
 
-### Sección 2.3 Algoritmos de la STL
+## 3 Algoritmos de la STL
 
-#### 2.3.1 ¿Qué son los algoritmos?
+### 3.1 ¿Qué son los algoritmos?
 
 Son funciones genéricas que operan sobre secuencias (contenedores). Se definen en `<algorithm>` y requieren **iteradores** como argumentos.
 
@@ -440,14 +440,17 @@ Son funciones genéricas que operan sobre secuencias (contenedores). Se definen 
 
 ---
 
-#### 2.3.2 Ejemplos y analogías de uso
+### 3.2 Ejemplos y analogías de uso
 
 ##### 🔍 `find`: Buscar un elemento
 
-**Analogía**: Buscar un nombre en una lista de asistencia.
+⚠️ Nota importante sobre find en distintos contenedores:
 
-<details>
-<summary>Solución sugerida</summary>
+* En vector, es posilbe usar std::find para buscar un valor. El iterador obtenido permite acceder y modificar el elemento encontrado.
+* En set, es posible usar set.find(valor). El iterador permite leer el valor, pero no modificarlo, ya que los elementos en un set son constantes.
+* En map, es posible usar map.find(clave). El iterador obtenido apunta a un par clave-valor (std::pair<const Key, Value>), y puedes modificar el valor usando it->second, pero no la clave.
+
+**Analogía**: Buscar un nombre en una lista de asistencia.
 
 ```cpp
 #include <iostream>
@@ -459,25 +462,21 @@ int main() {
     std::vector<std::string> lista = {"Ana", "Luis", "Carlos"};
     auto it = std::find(lista.begin(), lista.end(), "Luis");
 
-    if (it != lista.end())
+    if (it != lista.end()){
         std::cout << "Encontrado: " << *it << std::endl;
-    else
+    }
+    else {
         std::cout << "No está en la lista." << std::endl;
+    }
     return 0;
 }
 ```
 
-</details>
-
 ---
 
-##### 🔢 `count`: Contar ocurrencias
+#### 🔢 `count`: Contar ocurrencias
 
 **Analogía**: Contar cuántas veces alguien llegó tarde en un mes.
-
-<details>
-<summary>Solución sugerida</summary>
-
 ```cpp
 #include <iostream>
 #include <vector>
@@ -491,16 +490,11 @@ int main() {
 }
 ```
 
-</details>
-
 ---
 
 ##### 🔠 `sort`: Ordenar elementos
 
 **Analogía**: Ordenar calificaciones de mayor a menor.
-
-<details>
-<summary>Solución sugerida</summary>
 
 ```cpp
 #include <iostream>
@@ -511,22 +505,16 @@ int main() {
     std::vector<int> notas = {3, 5, 4, 2};
     std::sort(notas.begin(), notas.end(), std::greater<int>());
 
-    for (int n : notas)
+    for (int n : notas) {
         std::cout << n << " ";
+    }
     return 0;
 }
 ```
 
-</details>
-
----
-
 ##### 🧮 `accumulate`: Sumar elementos
 
 **Analogía**: Calcular el total de gastos del mes.
-
-<details>
-<summary>Solución sugerida</summary>
 
 ```cpp
 #include <iostream>
@@ -541,14 +529,7 @@ int main() {
 }
 ```
 
-</details>
-
----
-
 ##### 🧹 `remove`: Eliminar (lógicamente) un elemento
-
-<details>
-<summary>Solución sugerida</summary>
 
 ```cpp
 #include <iostream>
@@ -560,47 +541,18 @@ int main() {
     auto fin = std::remove(numeros.begin(), numeros.end(), 2);
     numeros.erase(fin, numeros.end());
 
-    for (int n : numeros)
+    for (int n : numeros) {
         std::cout << n << " ";
+    }
     return 0;
 }
-```
 
-</details>
 
 > 🛑 `remove` solo mueve los elementos no eliminados al principio. Hay que llamar `erase()` para ajustar el tamaño.
 
 ---
 
-##### 🎨 `for_each`: Ejecutar una acción
-
-<details>
-<summary>Solución sugerida</summary>
-
-```cpp
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <string>
-
-int main() {
-    std::vector<std::string> frutas = {"manzana", "pera", "uva"};
-
-    std::for_each(frutas.begin(), frutas.end(), [](std::string& fruta){
-        fruta = "🍎 " + fruta;
-    });
-
-    for (const std::string& f : frutas)
-        std::cout << f << std::endl;
-    return 0;
-}
-```
-
-</details>
-
----
-
-### 🧩 Relación entre iteradores y algoritmos
+## 🧩 3.4 Relación entre iteradores y algoritmos
 
 Los algoritmos **no trabajan directamente con contenedores**, sino con sus **iteradores**. Esto los hace más flexibles: un mismo algoritmo puede usarse sobre `vector`, `set`, `list`, etc.
 
@@ -628,10 +580,12 @@ int main() {
     std::cin >> buscar;
 
     auto it = std::find(nombres.begin(), nombres.end(), buscar);
-    if (it != nombres.end())
+    if (it != nombres.end()){
         std::cout << "Encontrado: " << *it << std::endl;
-    else
+    }
+    else {
         std::cout << "No encontrado." << std::endl;
+    }
     return 0;
 }
 ```
@@ -676,8 +630,9 @@ int main() {
     std::vector<int> calificaciones = {3, 5, 4, 2};
     std::sort(calificaciones.begin(), calificaciones.end(), std::greater<int>());
 
-    for (int nota : calificaciones)
+    for (int nota : calificaciones){
         std::cout << nota << " ";
+    }
     return 0;
 }
 ```
